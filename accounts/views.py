@@ -23,7 +23,7 @@ def signup_view(request):
             user = form.save()
             login(request, user)
             #log user in
-            return redirect('/')
+            return redirect('accounts:mood')
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
@@ -35,7 +35,7 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             #log user in
-            return redirect('/')
+            return redirect('accounts:mood')
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
@@ -109,6 +109,11 @@ def post_list(request):
             return redirect("accounts:mood")
     form = PostForm()
     posts = Post.objects.filter(author=request.user)
+    if posts:
+        last = posts[0]
+        streak = last.streak
+    else:
+        streak = 0
     serializer = serializers.PostSerializer(posts, many=True)
-    return render(request, "mood.html", {"form": form, "posts": serializer.data})
+    return render(request, "mood.html", {"form": form, "posts": serializer.data, "streak": streak})
 

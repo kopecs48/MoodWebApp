@@ -1,25 +1,66 @@
 {% extends 'base.html' %}
 {% block content %}
-<form class="site-form" action="{% url 'accounts:mood' %}" method="post">
-    {% csrf_token %}
-   {{form}} 
-   <input type="submit" value="Post">
-</form>
+<div class="container">
 
-<div id="right" style="border:solid white; padding:.5%; width: 15%; min-height: 300px; margin-right: 2%;">
-    <ul class="seperator"> <li><h1>Mood List</h1></li>
-    {% if posts %}
-      {% for post in posts %}
-          <li>
-            <h4>{{post.title}}</h4>
-            <P>{{post.content}}</P>
-            <p>Created: {{post.created_on}}</p>
-            <p>Streak: {{post.streak}}</p>
-  
-          </li>
-      {% endfor %}
-    {% endif %}
-      </ul>
-  </div>
-  
+    <div class="my-3 p-3 bg-white rounded box-shadow justify-content-center">
+	    
+	    <div class="col-md-8 col-md-offset-2 justify-content-center">
+	        
+    		<h1>Create Mood Post</h1>
+    		
+    		<form class="site-form" action="/accounts/mood/" method="post">
+    		    {% csrf_token %}
+    		    
+    		    <div class="form-group">
+    		        <label for="id_title" class="form-label">Mood Title</label>
+                    <input type="text" class="form-control" name="title" maxlength="200" required="" id="id_title">
+    		    </div>
+    		    
+    		    <div class="form-group">
+    		        <label for="id_content" class="form-label">Content</label>
+                    <textarea rows="5" class="form-control" name="content" required="" id="id_content" ></textarea>
+    		    </div>
+    		    
+    		    <div class="form-group">
+    		        <input type="submit" value="Post">
+    		    </div>
+    		    
+    		</form>
+		</div>
+		
+	</div>
+    
+    <div class="my-3 p-3 bg-white rounded box-shadow justify-content-center" style="width: 100%;">
+        <div class="d-flex">
+            <ul class="list-inline mx-auto justify-content-center" style="width: 100%;">
+                <li class="list-group-item w-100 list-group-item-action list-inline-item" style="width: 100%;">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Current Streak: {{streak}}</h5>
+                    </div>
+
+                </li>
+            {% if posts %}
+            {% for post in posts %}
+                <li class="list-group-item w-100 list-group-item-action list-inline-item" style="width: 100%;">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{post.title}}</h5>
+                        <small>
+                            <span class="badge bg-primary rounded-pill" style="color: white;">Streak: {{post.streak}}</span>
+                        </small>
+                        
+                    </div>
+                    <p class="mb-1">{{post.content}}</p>
+                    <small>
+                        {{post.created_on}}<br>
+                        <!-- {{post.created_time|time:'%h:%i A'}} -->
+                    </small>
+
+                </li>
+            {% endfor %}
+            {% endif %}
+            </ul>
+        </div>
+    </div>
+   
+</div>
 {% endblock %}

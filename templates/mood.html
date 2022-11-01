@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<form class="site-form" action="{% url 'accounts:mood' %}" method="post">
+    {% csrf_token %}
+   {{form}} 
+   <input type="submit" value="Post">
+</form>
+
+<div id="right" style="border:solid white; padding:.5%; width: 15%; min-height: 300px; margin-right: 2%;">
+    <ul class="seperator"> <li><h1>Mood List</h1></li>
+    {% if posts %}
+      {% for post in posts %}
+          <li>
+            <h4>{{post.title}}</h4>
+            <P>{{post.content}}</P>
+            <p>Created: {{post.created_on}}</p>
+            <p>Streak: {{post.streak}}</p>
+  
+          </li>
+      {% endfor %}
+    {% endif %}
+      </ul>
+  </div>
+  
+{% endblock %}

@@ -86,6 +86,8 @@ def create_post(request):
 
 @login_required
 def post_list(request):
+    today = date.today()
+    yesterday = today - timedelta(days=1)
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -94,8 +96,6 @@ def post_list(request):
             prevPosts = Post.objects.filter(author=request.user)
             if prevPosts:
                 prev = prevPosts[0]
-                today = date.today()
-                yesterday = today - timedelta(days=1)
                 prev_date = prev.created_on
                 if prev.created_on == today:
                     post.streak = prev.streak
@@ -109,11 +109,11 @@ def post_list(request):
             return redirect("accounts:mood")
     form = PostForm()
     posts = Post.objects.filter(author=request.user)
+    streak = 0
     if posts:
         last = posts[0]
-        streak = last.streak
-    else:
-        streak = 0
+        if last.created_on == yesterday or last.created_on == today:
+            streak = last.streak
     serializer = serializers.PostSerializer(posts, many=True)
     return render(request, "mood.html", {"form": form, "posts": serializer.data, "streak": streak})
 

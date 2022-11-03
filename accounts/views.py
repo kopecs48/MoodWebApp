@@ -15,22 +15,25 @@ from datetime import timedelta
 
 # Create your views here.
 
-
+#create new account if all required data is there and meets signup criteria
 def signup_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
+        #create form with posted data and check if it is valid
         if form.is_valid():
             user = form.save()
             login(request, user)
-            #log user in
+            #log user in and redirect to mood endpoint
             return redirect('accounts:mood')
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
 
+#log in user if they are posting to this endpoint and all data is authenticated
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
+        #if all data is proper and correct login to current seesion and redirect to mood endpoint
         if form.is_valid():
             user = form.get_user()
             login(request, user)
@@ -40,11 +43,13 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
+#log out the current user and redirect back to login
 def logout_view(request):
     if request.method == 'POST':
         logout(request)
     return redirect('accounts:login')
 
+#test method
 @login_required
 def create_post(request):
     if request.method == 'POST':
@@ -58,45 +63,25 @@ def create_post(request):
     return render(request, "post.html", {"form": form})
 
 
-# class PostList(generics.ListCreateAPIView):
-    
-#     serializer_class = serializers.PostSerializer
-#     # permission_classes = (IsAuthenticated,)
-    
-#     def get_queryset(self):
-#         """
-#         This view should return a list of all the purchases
-#         for the currently authenticated user.
-#         """
-        
-#         user = self.request.user
-#         return Post.objects.filter(author=user)
-
-    
-#     def perform_create(self, serializer):
-#         # serializer.author = self.request.user.id
-#         # serializer.save()
-        
-#         form = PostForm(data=self.request.data)
-#         if form.is_valid():
-#             post = form.save(commit=False)
-#             post.author = self.request.user
-#             post.save()
-#             return redirect("accounts:mood")
-
 @login_required
 def post_list(request):
+    #track today and yesterday for current streak field later
     today = date.today()
     yesterday = today - timedelta(days=1)
+    #if someone is posting a mood
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
+        #validate form
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
             prevPosts = Post.objects.filter(author=request.user)
+            #if there are previous posts from the user we want to know if any are from the day before
             if prevPosts:
                 prev = prevPosts[0]
                 prev_date = prev.created_on
+                #keep current streak if post is from today, increment if from yesterday
+                #else default back to 1
                 if prev.created_on == today:
                     post.streak = prev.streak
                 elif prev.created_on == yesterday:
@@ -106,14 +91,18 @@ def post_list(request):
             else:
                 post.streak = 1
             post.save()
+            #save post and do a get call on the mood endpoint
             return redirect("accounts:mood")
+    #create new form 
     form = PostForm()
     posts = Post.objects.filter(author=request.user)
+    #set current to 0 which will only stay 0 if there is no post from the day before
     streak = 0
     if posts:
         last = posts[0]
         if last.created_on == yesterday or last.created_on == today:
             streak = last.streak
-    serializer = serializers.PostSerializer(posts, many=True)
+    #serialize all data from the post db
+    serializer = serializers.PostSerializer(posts, many=True)   
     return render(request, "mood.html", {"form": form, "posts": serializer.data, "streak": streak})
 

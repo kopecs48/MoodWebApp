@@ -14,6 +14,7 @@
           
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
+                <!-- if the user is logged in add this -->
                 {% if user.is_authenticated %}
 
                 <li class="nav-item dropdown">
@@ -38,6 +39,7 @@
                     
                   </div>
                 </li>
+                <!-- if there is no logged in user -->
                 {% else %}
                 <li>
                     <form class="nav-link" action="{% url 'accounts:login' %}" method="get">

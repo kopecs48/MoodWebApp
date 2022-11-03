@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container">
-
+<!-- mood post form -->
     <div class="my-3 p-3 bg-white rounded box-shadow justify-content-center">
 	    
 	    <div class="col-md-8 col-md-offset-2 justify-content-center">
@@ -39,6 +39,7 @@
                     </div>
 
                 </li>
+                <!-- if there are posts loop through all of the posts and display the proper data -->
             {% if posts %}
             {% for post in posts %}
                 <li class="list-group-item w-100 list-group-item-action list-inline-item" style="width: 100%;">

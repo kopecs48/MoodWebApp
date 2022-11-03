@@ -4,4 +4,5 @@ from django.shortcuts import render, redirect
 
 
 def home(request):
+    #nothing to see on hompage so send them to mood endpoint
     return redirect('accounts:mood')

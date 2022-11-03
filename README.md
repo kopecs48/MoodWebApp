@@ -30,6 +30,10 @@ After it is created run the script to activate the virtual environment
 * Windows:
   * CMD: <pre><code>env\bin\activate.bat</code></pre>
   * PowerShell <pre><code>env\bin\Activate.ps1</code></pre>
+  * Some machines may have their env created with a scripts directory instead of bin use this instead:
+   * PowerShell <pre><code>env\scripts\Activate.ps1</code></pre>
+   * CMD: <pre><code>env\scripts\activate.bat</code></pre>
+   
 * Linux and Mac
   * <pre><code>source env/bin/activate</code></pre>
 

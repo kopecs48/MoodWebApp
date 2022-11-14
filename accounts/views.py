@@ -12,7 +12,6 @@ import django_filters.rest_framework
 from datetime import date
 from datetime import timedelta
 
-
 # Create your views here.
 
 #create new account if all required data is there and meets signup criteria
